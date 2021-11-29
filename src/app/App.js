@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
 
 const defaults = {
     amount: 500,
@@ -21,12 +22,12 @@ const App = () => {
                     setForm({ ...form, cb: parseFloat(parsed[1].replace(',', '.')) });
                 }
             });
-    }, [])
+    }, []);
 
     const handleChange = ({ target }) => {
         const { name, value } = target;
         setForm({ ...form, [name]: value });
-    }
+    };
 
     useEffect(() => {
         setRubles((form.amount - 1) * form.rate);
@@ -39,16 +40,23 @@ const App = () => {
 
     return (
         <main>
-            <div>
-                <div>
-                    <label>Сумма вывода</label> <input type='number' step='0.01' name='amount' value={form.amount} onChange={handleChange} />
-                    <label>Курс банка</label> <input type='number' step='0.01' name='rate' value={form.rate} onChange={handleChange} />
-                    <label>Курс ЦБ</label> <input type='number' step='0.01' name='cb' value={form.cb} onChange={handleChange} />
-                </div>
-                <p>Вывод в долларах: {null === dollars ? 'подсчёт..' : dollars}</p>
-                <p>Вывод в рублях: {null === rubles ? 'подсчёт..' : rubles}</p>
-                <p>Разница: {null === diff ? 'подсчёт...' : diff}</p>
-                {null !== diff && <p>Выгоднее в {diff > 0 ? 'долларах' : 'рублях'}</p>}
+            <div className='container'>
+                <h1>Upwork withdraw calc</h1>
+                <form onSubmit={(e) => e.preventDefault()}>
+                    <div className='form-group'>
+                        <label>Withdraw amount</label> <input className='form-control' type='number' step='0.01' name='amount' value={form.amount} onChange={handleChange} />
+                    </div>
+                    <div className='form-group'>
+                        <label>Bank exchange rate</label> <input className='form-control' type='number' step='0.01' name='rate' value={form.rate} onChange={handleChange} />
+                    </div>
+                    <div className='form-group'>
+                        <label>Central bank exchange rates</label> <input className='form-control' type='number' step='0.01' name='cb' value={form.cb} onChange={handleChange} />
+                    </div>
+                </form>
+                <p>Withdraw in $: {null === dollars ? 'calculating..' : dollars}</p>
+                <p>Withdraw in ₽: {null === rubles ? 'calculating..' : rubles}</p>
+                <p>Diff: {null === diff ? 'calculating...' : diff}</p>
+                {null !== diff && <p style={{ fontWeight: 'bold' }}>More profitable in {diff > 0 ? '$' : '₽'}</p>}
             </div>
         </main>
     )
